@@ -1,0 +1,14 @@
+applications:
+  - name: investigator-graph-aws-sap-hackathon-ts
+    memory: 512M
+    disk_quota: 1024M
+    instances: 1
+    buildpacks:
+      - nodejs_buildpack
+    health-check-type: http
+    health-check-http-endpoint: /health
+    timeout: 180
+    command: npm run start:server
+    env:
+      RESOURCE_GROUP: default
+      NPM_CONFIG_PRODUCTION: "false"

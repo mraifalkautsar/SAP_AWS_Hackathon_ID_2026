@@ -1,0 +1,66 @@
+import { Annotation } from "@langchain/langgraph";
+
+export interface PredictionTargetColumn {
+  name: string;
+  prediction_placeholder: string;
+  task_type: "regression" | "classification";
+}
+
+export interface PredictionConfig {
+  target_columns: PredictionTargetColumn[];
+}
+
+export interface StolenItem {
+  ITEM_ID: string;
+  ITEM_NAME: string;
+  ARTIST: string;
+  ACQUISITION_DATE: string;
+  INSURANCE_VALUE: number | string;
+  ITEM_CATEGORY: string;
+  DIMENSIONS: string;
+  CONDITION_SCORE: number;
+  RARITY_SCORE: number;
+  PROVENANCE_CLARITY: number;
+}
+
+export interface RPT1Payload {
+  prediction_config: PredictionConfig;
+  index_column: string;
+  rows: StolenItem[];
+}
+
+export const AgentState = Annotation.Root({
+  payload: Annotation<RPT1Payload>({
+    reducer: (_: RPT1Payload, update: RPT1Payload) => update,
+    default: () => ({}) as RPT1Payload,
+  }),
+  suspect_names: Annotation<string>({
+    reducer: (_: string, update: string) => update,
+    default: () => "",
+  }),
+  appraisal_result: Annotation<string | undefined>({
+    reducer: (_: string | undefined, update: string | undefined) => update,
+    default: () => undefined,
+  }),
+  evidence_analysis: Annotation<string | undefined>({
+    reducer: (_: string | undefined, update: string | undefined) => update,
+    default: () => undefined,
+  }),
+  intelligence_report: Annotation<string | undefined>({
+    reducer: (_: string | undefined, update: string | undefined) => update,
+    default: () => undefined,
+  }),
+  final_conclusion: Annotation<string | undefined>({
+    reducer: (_: string | undefined, update: string | undefined) => update,
+    default: () => undefined,
+  }),
+  messages: Annotation<Array<{ role: string; content: string }>>({
+    reducer: (
+      current: Array<{ role: string; content: string }>,
+      update: Array<{ role: string; content: string }>,
+    ) => [...current, ...update],
+    default: () => [],
+  }),
+});
+
+export type AgentStateType = typeof AgentState.State;
